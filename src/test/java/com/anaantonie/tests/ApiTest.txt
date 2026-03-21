@@ -1,0 +1,15 @@
+ARRANGE:
+
+ - Define endpoint: https://jsonplaceholder.typicode.com/todos/1
+
+ACT:
+
+ - Send GET request to the endpoint
+ - Store the response
+
+ASSERT:
+
+ - Verify response status code is 200
+ - Verify response body contains field "title"
+ - Verify "title" is not empty
+ - Verify response time is acceptable
