@@ -4,32 +4,35 @@ on:
   push:
     branches:
       - main
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   test:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      - name: Run tests
-        run: mvn test
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "24"
+
+      - run: mvn test
 
   build-and-push:
     runs-on: ubuntu-latest
     needs: test
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      - name: Login to Docker Hub
-        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "24"
 
-      - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/qa-final-project-java .
+      - run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
-      - name: Push Docker image
-        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/qa-final-project-java
+      - run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/qa-final-project-java .
+
+      - run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/qa-final-project-java
