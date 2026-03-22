@@ -2,17 +2,24 @@
 
 ![CI](https://github.com/AAntonie/qa-final-project-java/actions/workflows/ci.yml/badge.svg)
 
-![Flow GitHub → Docker → DockerHub](GitHubDockerImageDockerHub.png)
+# Descriere proiect
 
-## Descriere proiect
+Acest proiect prezintă un workflow complet pentru un proiect Java/Maven, urmând bune practici de organizare, testare și CI/CD.
 
-Acest proiect ilustrează un workflow complet pentru un proiect Java/Maven, cu bune practici în organizare, testare și CI/CD:
+**Pipeline CI cu GitHub Actions:**
 
-- Structură Maven corectă (src/test/java/..., config/, data/)
-- Fișier YAML (`config/app.yaml`) pentru configurarea mediului, URL-urilor și timeout-urilor
-- Teste API în pseudocod (`ApiTest.txt`), pentru a demonstra logica testării fără cod executabil
-- Dockerfile pentru build și rulare container izolat
-- Pipeline GitHub Actions (`.github/workflows/ci.yml`) pentru automatizarea testelor și publicarea imaginii Docker
+- La fiecare push, testele sunt rulate automat cu Maven (`mvn test`)
+- Dacă testele trec, se construiește o imagine Docker pe baza Dockerfile-ului
+- Pipeline-ul se autentifică în Docker Hub folosind GitHub Secrets și face push imaginii
+- Aplicația devine astfel disponibilă ca imagine containerizată
+
+**Componente principale ale proiectului:**
+
+- Structură Maven corectă: `src/test/java/...`, `config/`, `data/`
+- Fișier YAML: `config/app.yaml` pentru configurarea mediului, URL-urilor și timeout-urilor
+- Teste API în pseudocod: `ApiTest.txt`, pentru a demonstra logica testării fără cod executabil
+- Dockerfile pentru build și rulare în container izolat
+- Pipeline GitHub Actions: `.github/workflows/ci.yml` pentru automatizarea testelor și publicarea imaginii Docker
 
 ## Structura proiectului
 
@@ -104,25 +111,41 @@ git push origin main
 - Dacă job-ul `build-and-push` rulează fără erori, înseamnă că secrets există și sunt corecte.
 - Secrets nu pot fi accesate local; ele funcționează doar în GitHub Actions.
 
-> **Notă:** Valorile secretelor nu trebuie vizualizate; pipeline-ul le folosește automat pentru autentificarea și push-ul imaginii Docker.
-> Cod sursă
-> │
-> ▼
-> GitHub Actions
-> │
-> ▼
-> ┌──────────────────────┐
-> │ Job Test │
-> │ Run 'mvn test' │
-> │ Pass → continuă │
-> │ Fail → oprește │
-> └──────────────────────┘
-> │
-> ▼
-> ┌──────────────────────┐
-> │ Build Docker Image │
-> │ Dockerfile │
-> └──────────────────────┘
-> │
-> ▼
-> Push to Docker Hub
+**Notă:** Valorile secretelor nu trebuie vizualizate; pipeline-ul le folosește automat pentru autentificarea și push-ul imaginii Docker.
+Cod sursă
+│
+▼
+GitHub Actions
+│
+▼
+┌────────────────────────────┐
+│ Job Test │
+│ Run 'mvn test' │
+│ Pass → continuă │
+│ Fail → oprește │
+└────────────────────────────┘
+│
+▼
+┌────────────────────────────┐
+│ Build Docker Image │
+│ Dockerfile │
+│ docker build │
+└────────────────────────────┘
+│
+▼
+┌────────────────────────────┐
+│ Docker Login │
+│ docker login │
+│ (GitHub Secrets) │
+└────────────────────────────┘
+│
+▼
+┌────────────────────────────┐
+│ Push to Docker Hub │
+│ docker push │
+└────────────────────────────┘
+│
+▼
+Docker Hub (Image disponibilă)
+
+![Flow GitHub → Docker → DockerHub](GitHubDockerImageDockerHub.png)
