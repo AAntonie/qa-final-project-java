@@ -112,40 +112,40 @@ git push origin main
 - Secrets nu pot fi accesate local; ele funcționează doar în GitHub Actions.
 
 **Notă:** Valorile secretelor nu trebuie vizualizate; pipeline-ul le folosește automat pentru autentificarea și push-ul imaginii Docker.
+
+```text
 Cod sursă
 │
 ▼
-GitHub Actions
-│
-▼
 ┌────────────────────────────┐
-│ Job Test │
-│ Run 'mvn test' │
-│ Pass → continuă │
-│ Fail → oprește │
+│ Job Test                   │
+│ Run 'mvn test'             │
+│ Pass → continuă            │
+│ Fail → oprește             │
 └────────────────────────────┘
 │
 ▼
 ┌────────────────────────────┐
-│ Build Docker Image │
-│ Dockerfile │
-│ docker build │
+│ Build Docker Image         │
+│ Dockerfile                 │
+│ docker build               │
 └────────────────────────────┘
 │
 ▼
 ┌────────────────────────────┐
-│ Docker Login │
-│ docker login │
-│ (GitHub Secrets) │
+│ Docker Login               │
+│ docker login               │
+│ (GitHub Secrets)           │
 └────────────────────────────┘
 │
 ▼
 ┌────────────────────────────┐
-│ Push to Docker Hub │
-│ docker push │
+│ Push to Docker Hub         │
+│ docker push                │
 └────────────────────────────┘
 │
 ▼
 Docker Hub (Image disponibilă)
+```
 
 ![Flow GitHub → Docker → DockerHub](GitHubDockerImageDockerHub.png)
